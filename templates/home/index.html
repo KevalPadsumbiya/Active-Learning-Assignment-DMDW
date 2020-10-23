@@ -68,7 +68,7 @@
           {% csrf_token %}
           <!-- <input type="file"name="file_data"> -->
           <!-- <br><h3>OR</h3><br> -->
-          <textarea style="font-size:17px; width: 55%; height:300px;" name="textarea_data" placeholder="Enter comma(,),space( ) or semicolon(;) seperated data (first line should be class names)">{{input}}</textarea><br>
+          <textarea style="font-size:17px; width: 55%; height:300px;" name="textarea_data" placeholder="Enter comma(,),space( ) or semicolon(;) seperated data (first line should contain class names)">{{input}}</textarea><br>
           <input class="submit" type="submit" value="Calculate">
         </form>
         
