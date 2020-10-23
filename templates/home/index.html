@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css2?family=Lora&family=Merriweather:wght@300&display=swap" rel="stylesheet">    <title>ID3 Algorithm</title>
+
+    <style>
+      *
+      {
+        font-family: 'Lora', serif;
+      }
+      table,tr,td,th
+      {
+        border-collapse: collapse;
+        border:1px solid yellowgreen;
+      }
+      table
+      {
+        width:40%;
+        font-size: 20px;
+        text-align: center;
+      }
+      td
+      {
+        width: 25%;
+      }
+      tr
+      {
+        height:50px;
+      }
+      p
+      {
+        font-size: 20px;
+      }
+      .submit
+      {
+        font-size: 16px;
+        width:100px;
+        height: 50px;
+        transition: 0.3s;
+      }
+      .submit:hover,.submit1:hover
+      {
+        -moz-box-shadow: 0 0 5px #888;
+        -webkit-box-shadow: 0 0 5px#888;
+        box-shadow: 0 0 5px #888;
+        border:none;
+        background-color: yellowgreen;
+        color: white;
+        border-radius: 2px;
+      }
+      .submit1
+      {
+        width:200px;
+        font-size: 16px;
+        height: 50px;
+        transition: 0.3s;
+      }
+      </style>
+  </head>
+
+  <body style="background: url('https://i.postimg.cc/BbBNdgTf/watermark.jpg');">
+    <center>
+        
+      <h2 style="color: yellowgreen;">ID3 Algorithm</h2><br>
+        
+        <form action="" method="POST">
+          {% csrf_token %}
+          <!-- <input type="file"name="file_data"> -->
+          <!-- <br><h3>OR</h3><br> -->
+          <textarea style="font-size:17px; width: 55%; height:300px;" name="textarea_data" placeholder="Enter comma(,),space( ) or semicolon(;) seperated data (first line should be class names)">{{input}}</textarea><br>
+          <input class="submit" type="submit" value="Calculate">
+        </form>
+        
+        <!-- Default example 1 -->
+        <form action="" method="POST">
+          {% csrf_token %}
+          <textarea hidden style="font-size:17px; width: 50%; height:300px;" name="textarea_data" >
+            Outlook;Temperature;Humidity;Windy;Play
+            Sunny;Hot;High;False;No
+            Sunny;Hot;High;True;No
+            Overcast;Hot;High;False;Yes
+            Rainy;Mild;High;False;Yes
+            Rainy;Cool;Normal;False;Yes
+            Rainy;Cool;Normal;True;No
+            Overcast;Cool;Normal;True;Yes
+            Sunny;Mild;High;False;No
+            Sunny;Cool;Normal;False;Yes
+            Rainy;Mild;Normal;False;Yes
+            Sunny;Mild;Normal;True;Yes
+            Overcast;Mild;High;True;Yes
+            Overcast;Hot;Normal;False;Yes
+            Rainy;Mild;High;True;No
+          </textarea><br>
+          <input class="submit1" type="submit" value="Default example 1">
+        </form>
+        
+        <!-- Default example 2 -->
+        <form action="" method="POST">
+          {% csrf_token %}
+          <textarea hidden style="font-size:17px; width: 50%; height:300px;" name="textarea_data" >
+            age,competition,type,profit
+            old,yes,software,down
+            old,no,software,down
+            old,no,hardware,down
+            mid,yes,software,down
+            mid,yes,hardware,down
+            mid,no,hardware,up
+            mid,no,software,up
+            new,yes,software,up
+            new,no,hardware,up
+            new,no,software,up
+          </textarea><br>
+          <input class="submit1" type="submit" value="Default example 2">
+        </form>
+      <br>
+      
+      {% if status %}
+        <div style="border: 1px solid black; background:white; color: yellowgreen;">
+          <h1>Details</h1>
+        </div>
+      {% endif %}
+    
+      {% for main_class,class,attrs,yes,no,ent,gain in result %}
+          <h2 style="color: yellowgreen;">{{class}}</h2>
+    
+          <table style="background-color:white;">
+            <tr>
+              <th>↓{{main_class}}\{{class}}→</th>
+              {% for col in attrs %}
+                <th>{{col}}</th>
+              {% endfor %}
+            </tr>
+            <tr>
+              {% for el in yes %}
+                <td>{{el}}</td>
+              {% endfor %}
+            </tr>
+            <tr>
+              {% for el in no %}
+                <td>{{el}}</td>
+              {% endfor %}
+            </tr>
+          </table>
+    
+          <p>Entropy of {{age}} class : {{ent}}</p>
+          <p>Gain of {{age}} class : {{gain}}</p>
+    
+          <hr>
+      {% endfor %}
+    </center>
+    
+    <h4 style="float: right;">Created by : Keval Padsumbiya(17IT405)</h4>
+  </body>
+</html>
