@@ -5,6 +5,8 @@ def index(request):
 
     if(request.method == "GET" and request.GET.get('Algorithm')=='Apriori'):        
         return render(request,"home/index.html",{'algo':'Apriori'})
+    elif(request.method == "GET" and request.GET.get('Algorithm')=='Naive-Bayes'):
+        return render(request,"home/index.html",{'algo':'Naive-Bayes'})
 
     if request.method == "POST":
 
@@ -282,4 +284,98 @@ def index(request):
                 return render(request,"home/index.html",{'result' : result,'input':data,'status':"ok",'algo':'ID3','data1':data1,'data2':data2,'classes':l[0],'rem_rows':str(max(0,len(l)-25))})
             except:
                 return render(request,"home/index.html",{'input':"Please enter valid data",'algo':'ID3'})
+
+        elif request.POST.get('Naive-Bayes'):
+            data = request.POST['textarea_data']
+            other = request.POST['other']
+            print(other)
+            # print(data)
+            if len(data) == 0 :
+                return render(request,"home/index.html",{'input':"Please enter data",'algo':'Naive-Bayes'})
+            try :
+                Data = []
+                s = ""
+                vars = []
+
+                for ch in data:
+                    if ch != "\n":
+                        s += ch
+                    else:
+                        s = s.strip()
+                        if(len(s.split(';'))>1):
+                            Data.append(s.split(';'))
+                        elif(len(s.split(','))>1): 
+                            Data.append(s.split(','))
+                        elif(len(s.split(' '))>1): 
+                            Data.append(s.split(' '))
+                        s = ""
+                s = s.strip()
+                if(len(s.split(';'))>1):
+                    Data.append(s.split(';'))
+                elif(len(s.split(','))>1): 
+                    Data.append(s.split(','))
+                elif(len(s.split(' '))>1): 
+                    Data.append(s.split(' '))
+
+                n = len(Data)
+                class_vals = dict()
+                for i in range(1,n):
+                    if Data[i][-1] not in class_vals:
+                        class_vals[Data[i][-1]] = 0
+                    class_vals[Data[i][-1]] +=1
+
+                results = dict()
+                output = []
+                for i in range(len(Data[0])-1):
+                    vals = dict()
+                    for j in range(1,n):
+                        if Data[j][i] not in vals:
+                            vals[Data[j][i]] = 0
+                        vals[Data[j][i]] += 1
+                    for key,value in vals.items():
+                        temp = dict()
+                        for k,v in class_vals.items():
+                            cnt = 0
+                            for l in range(1,n):
+                                if Data[l][i] == key and Data[l][-1] == k:
+                                    cnt += 1
+                            tmp = "$$P({}|{}) = {{\\frac{{P({} | {}) P({})}}{{P({})}}}}".format(key,k,k,key,key,k)
+                            if cnt/math.gcd(cnt,v) == 0 or v/math.gcd(cnt,v) == 0 :
+                                tmp += " = 0$$"
+                            else:
+                                tmp += " = {{\\frac{{{}}}{{{}}}}}$$".format(cnt//math.gcd(cnt,v),v//math.gcd(cnt,v))
+                            # print("temp :",tmp)
+                            output.append(tmp)
+                            temp[k]=cnt/v
+                        results[key] = temp
+                    # print(output)
+
+                if len(other) >0 :
+                    other = other.strip()
+                    if(len(other.split(';'))>1):
+                        sample = other.split(';')
+                    elif(len(other.split(','))>1): 
+                        sample = other.split(',')
+                    elif(len(other.split(' '))>1): 
+                        sample = other.split(' ')
+                
+                    for k,v in class_vals.items():
+                        tmp = "$$P(({})|{}) = ".format(','.join(sample),k)
+                        for el in sample:
+                            # print("P({}|{})*".format(el,k),end="")
+                            tmp += "P({}|{})*".format(el,k)
+                        # print(tmp) 
+                        # print("P({}) = ".format(k),end="")
+                        ans = v/(n-1)
+                        for atr in sample:
+                            ans *= results[atr][k]
+                        tmp += "P({}) = {}$$".format(k,ans)
+                        output.append(tmp)
+                        # print(ans)
+                
+                return render(request,"home/index.html",{'status':'ok','other':other,'input':data,'result':output,'algo':'Naive-Bayes'})
+            except :
+                return render(request,"home/index.html",{'input':"Please enter valid data",'algo':'Naive-Bayes'})
+
     return render(request,"home/index.html",{'algo':'ID3'})
+
