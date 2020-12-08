@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <title>{{algo}}</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora&family=Merriweather:wght@300&display=swap" rel="stylesheet">    <title>ID3 Algorithm</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script>
+    MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+    </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
       *
@@ -116,7 +122,6 @@
 
   <body style="background: url('https://i.postimg.cc/BbBNdgTf/watermark.jpg');">
 
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="box-shadow: 0px 1px 3px #999;">
       <div class="container">
           <a href="/" class="navbar-brand"><b style="color: yellowgreen;">Data Mining Algorithms</b></a>
@@ -132,9 +137,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="?Algorithm=Apriori">Apriori Algorithm</a>
                     </li>
-                </ul>
+                    <li class="nav-item">
+                      <a class="nav-link" href="?Algorithm=Naive-Bayes">Naive Bayes</a>
+                    </li>
+                  </ul>
             </div>
-            {% else %}
+            {% elif algo == "Apriori" %}
             <div class="navbar-collapse collapse" id="navbar9">
                 <ul class="navbar-nav ml-auto text-center">
                     <li class="nav-item">
@@ -143,6 +151,23 @@
                     <li class="nav-item" style="background: yellowgreen;">
                         <a class="nav-link" href="?Algorithm=Apriori" style="color: white; ">Apriori Algorithm</a>
                     </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="?Algorithm=Naive-Bayes">Naive Bayes</a>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+              <div class="navbar-collapse collapse" id="navbar9">
+                <ul class="navbar-nav ml-auto text-center">
+                  <li class="nav-item">
+                      <a class="nav-link" href="?Algorithm=ID3">ID3 Algorithm</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="?Algorithm=Apriori">Apriori Algorithm</a>
+                  </li>
+                  <li class="nav-item" style="background: yellowgreen;">
+                    <a class="nav-link" href="?Algorithm=Naive-Bayes" style="color: white; ">Naive Bayes</a>
+                  </li>
                 </ul>
             </div>
           {% endif %}
@@ -603,7 +628,7 @@
           <input value="{{min_sup}}" type="text" name="sup_count" placeholder="Enter support count" style="height:50px; font-size:17px; width: 55%; border:2px solid black;"><br><br>
           <input class="submit" type="submit" value="Calculate" name="Apriori">
         </form>
-        
+
         <div class="container">
           <div class="row">
             <div class="col-sm">
@@ -1156,7 +1181,7 @@ other vegetables,shopping bags
         <br><br>
         {% if status %}
           <h2 style="color: yellowgreen;">Table</h2>
-          <br>  
+          <br>
           <!-- Data table -->
             <div class="col-sm-12">
               <div class="panel panel-default">
@@ -1199,7 +1224,7 @@ other vegetables,shopping bags
           </div>
           <br><br>
           {% endif %}
-          
+
             {% for l,itemsets in result %}
               <br>
               <h3 style="color: yellowgreen;">{{l}}</h3>
@@ -1218,6 +1243,94 @@ other vegetables,shopping bags
               <hr style="background : rgb(185, 185, 185);">
             {% endfor %}
       {% endif %}
+      <br>
+      {% if algo == "Naive-Bayes" %}
+        <form action="" method="POST">
+          {% csrf_token %}
+          <textarea style="font-size:17px; width: 55%; height:300px; border:2px solid black;" name="textarea_data" placeholder="Enter comma(,),space( ) or semicolon(;) seperated data (first line should be class names)">{{input}}</textarea><br>
+          <input value="{{other}}" type="text" placeholder="Enter list of attributes ?...Yes? then enter single list at a time :)" style="font-size:17px; width: 55%; height:50px; border:2px solid black;" name="other"><br><br>
+          <input class="submit" type="submit" style="width: 200px;" value="Apply Naive Bayes" name="Naive-Bayes">
+        </form>
+
+        <table style="border: none;">
+          <tr style="border: none;">
+            <td style="border: none;">
+              <form action="" method="POST">
+                {% csrf_token %}
+                <textarea style="font-size:17px; width: 55%; height:300px; border:2px solid black;" name="textarea_data" placeholder="Enter comma(,),space( ) or semicolon(;) seperated data" hidden>
+                  age;income;student;credit_rating;buys_computer
+                  <=30;high;no;fair;no
+                  <=30;high;no;excellent;no
+                  31…40;high;no;fair;yes
+                  >40;medium;no;fair;yes
+                  >40;low;yes;fair;yes
+                  >40;low;yes;excellent;no
+                  31…40;low;yes;excellent;yes
+                  <=30;medium;no;fair;no
+                  <=30;low;yes;fair;yes
+                  >40;medium;yes;fair;yes
+                  <=30;medium;yes;excellent;yes
+                  31…40;medium;no;excellent;yes
+                  31…40;high;yes;fair;yes
+                  >40;medium;no;excellent;no
+                </textarea><br>
+                <input type="text" placeholder="Enter list of attributes ?...Yes? then enter single list at a time :)" style="font-size:17px; width: 55%; height:50px; border:2px solid black;" name="other" hidden>
+                <input class="submit1" type="submit" value="Default Example 1" name="Naive-Bayes">
+              </form>
+            </td>
+            <td style="border: none;">
+              <form action="" method="POST">
+              {% csrf_token %}
+              <textarea style="font-size:17px; width: 55%; height:300px; border:2px solid black;" name="textarea_data" placeholder="Enter comma(,),space( ) or semicolon(;) seperated data" hidden>
+                Outlook;Temperature;Humidity;Windy;Play
+                Sunny;Hot;High;False;No
+                Sunny;Hot;High;True;No
+                Overcast;Hot;High;False;Yes
+                Rainy;Mild;High;False;Yes
+                Rainy;Cool;Normal;False;Yes
+                Rainy;Cool;Normal;True;No
+                Overcast;Cool;Normal;True;Yes
+                Sunny;Mild;High;False;No
+                Sunny;Cool;Normal;False;Yes
+                Rainy;Mild;Normal;False;Yes
+                Sunny;Mild;Normal;True;Yes
+                Overcast;Mild;High;True;Yes
+                Overcast;Hot;Normal;False;Yes
+                Rainy;Mild;High;True;No
+              </textarea><br>
+              <input value="Rainy;Hot;High;False" type="text" placeholder="Enter list of attributes ?...Yes? then enter single list at a time :)" style="font-size:17px; width: 55%; height:50px; border:2px solid black;" name="other" hidden>
+
+              <input class="submit1" type="submit" value="Default Example 2" name="Naive-Bayes">
+            </form>
+          </td>
+          </tr>
+        </table>
+
+
+        <br>
+        <div class="container" style="background:white; border:1px solid lightgrey; width:450px;">
+          <br><h5 style="color: yellowgreen; font-weight:bolder;">Formula(s) Used</h5>
+          <br><p style="font-size: 15px;">$$P(A|B) = {\frac{P(B | A) P(A)}{P(B)}}$$</p>
+          <p style="font-size: 15px;">$$P((X1,..,Xk)|C) = {P(x1|C)·…·P(xk|C)}$$</p>
+          <br>
+        </div>
+        <br>
+        {% if status == "ok" %}
+          <div class="container" style="background:white; border:1px solid lightgrey;">
+            <br><h2 style="color: yellowgreen; font-weight:bolder;">Details</h2>
+            {%  for row in result %}
+              <hr>
+              <p style="font-size: 14px; font-weight:lighter; color:rgb(94, 94, 94)">{{row}}</p>
+            {% endfor %}
+            <br>
+          </div>
+        {% endif %}
+      {% endif %}
+        <br>
+        <div class="container" style="-moz-box-shadow: 0 0 5px #888;
+        -webkit-box-shadow: 0 0 5px#888;
+        box-shadow: 0 0 5px #888; height:50px; font-size:20px; padding:10px; background:yellowgreen; color:white;">Thank you for visiting ! you can find complete code <a href="https://github.com/KevalPadsumbiya/Active-Learning-Assignment-DMDW" target="_blank" style="color:black;">here</a> !</div>
+        <br><br>
     </center>
   </body>
 </html>
